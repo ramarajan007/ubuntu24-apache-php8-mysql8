@@ -51,18 +51,20 @@ RUN wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.ta
 COPY phpmyadmin.conf /etc/apache2/conf-available/
 # COPY MySQL Setup script file
 COPY mysql-setup.sh /root/mysql-setup.sh
+# Copy startup script
+COPY start-services.sh /usr/local/bin/start-services.sh
 
 # Enable phpMyAdmin configuration and necessary Apache modules
 RUN a2enconf phpmyadmin && \
     a2enmod php8.3 && \
     a2enmod rewrite && \
     chmod +x /root/mysql-setup.sh && \
+    chmod +x /usr/local/bin/start-services.sh && \
     apt-get autoremove -y
 
 #ENTRYPOINT ["/root/mysql-setup.sh"]
 
 EXPOSE 80 3306
 
-# Set the command to run Apache in the foreground
-#CMD ["apachectl", "-D", "FOREGROUND"]
-CMD ["sh", "-c", "apachectl -D FOREGROUND & mysqld -F"]
+# Use the startup script to start both services
+CMD ["/usr/local/bin/start-services.sh"]
