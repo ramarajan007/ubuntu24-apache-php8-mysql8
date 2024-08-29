@@ -56,7 +56,8 @@ COPY mysql-setup.sh /root/mysql-setup.sh
 RUN a2enconf phpmyadmin && \
     a2enmod php8.3 && \
     a2enmod rewrite && \
-    chmod +x /root/mysql-setup.sh
+    chmod +x /root/mysql-setup.sh && \
+    apt-get autoremove -y
 
 #ENTRYPOINT ["/root/mysql-setup.sh"]
 
