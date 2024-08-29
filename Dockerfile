@@ -7,7 +7,10 @@ RUN apt-get update && \
     apt-get install -y \
     software-properties-common \
     wget \
-    curl 
+    nano \
+    net-tools \
+    curl \
+    mysql-server
 RUN add-apt-repository ppa:ondrej/php -y && \
     apt-get update -y && \
     apt-get install -y \
@@ -45,11 +48,20 @@ RUN wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.ta
 
 # Copy phpMyAdmin configuration file
 COPY phpmyadmin.conf /etc/apache2/conf-available/
+# COPY MySQL Setup script file
+COPY mysql-setup.sh /root/mysql-setup.sh
 
 # Enable phpMyAdmin configuration and necessary Apache modules
 RUN a2enconf phpmyadmin && \
     a2enmod php8.3 && \
     a2enmod rewrite
+    echo "bind-address = 0.0.0.0" >> /etc/mysql/mysql.conf.d/mysqld.cnf
+    chmod +x /root/mysql-setup.sh
+
+#ENTRYPOINT ["/root/mysql-setup.sh"]
+
+EXPOSE 80 3306
 
 # Set the command to run Apache in the foreground
-CMD ["apachectl", "-D", "FOREGROUND"]
+#CMD ["apachectl", "-D", "FOREGROUND"]
+CMD ["sh", "-c", "apachectl -D FOREGROUND & mysqld -F"]
