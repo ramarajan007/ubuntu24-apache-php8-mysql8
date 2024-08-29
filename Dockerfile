@@ -44,7 +44,8 @@ RUN wget https://www.phpmyadmin.net/downloads/phpMyAdmin-latest-all-languages.ta
     mkdir /usr/share/phpmyadmin/tmp && \
     chown -R www-data:www-data /usr/share/phpmyadmin && \
     chmod 777 /usr/share/phpmyadmin/tmp && \
-    echo '<?php phpinfo(); ?>' > /var/www/html/info.php
+    echo '<?php phpinfo(); ?>' > /var/www/html/info.php && \
+    echo "bind-address = 0.0.0.0" >> /etc/mysql/mysql.conf.d/mysqld.cnf
 
 # Copy phpMyAdmin configuration file
 COPY phpmyadmin.conf /etc/apache2/conf-available/
@@ -54,8 +55,7 @@ COPY mysql-setup.sh /root/mysql-setup.sh
 # Enable phpMyAdmin configuration and necessary Apache modules
 RUN a2enconf phpmyadmin && \
     a2enmod php8.3 && \
-    a2enmod rewrite
-    echo "bind-address = 0.0.0.0" >> /etc/mysql/mysql.conf.d/mysqld.cnf
+    a2enmod rewrite && \
     chmod +x /root/mysql-setup.sh
 
 #ENTRYPOINT ["/root/mysql-setup.sh"]
