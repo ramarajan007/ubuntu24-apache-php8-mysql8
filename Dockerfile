@@ -64,7 +64,7 @@ RUN a2enconf phpmyadmin && \
 
 #ENTRYPOINT ["/root/mysql-setup.sh"]
 
-EXPOSE 80 3306
+EXPOSE 80 3306 33060
 
 # Use the startup script to start both services
 CMD ["/usr/local/bin/start-services.sh"]
