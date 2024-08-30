@@ -2,8 +2,8 @@
 
 
 # Start Apache in the foreground
-apachectl -D FOREGROUND & service mysql start
+apachectl -D FOREGROUND 
 
 # Start MySQL
-#service mysql start
+service mysql start
 
